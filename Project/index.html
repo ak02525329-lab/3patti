@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VIP Games Hub</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Responsive games download hub with search and VIP background." />
+  <style>
+    /* VIP Background */
+    :root {
+      --vip-bg: url('BG1'); /* 🔁 Replace with your VIP background image URL */
+    }
+    body {
+      min-height: 100vh;
+      background-image: linear-gradient(to bottom right, rgba(0,0,0,.75), rgba(0,0,0,.85)), var(--vip-bg);
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+    }
+    /* Gold glow for VIP feel */
+    .vip-glow { box-shadow: 0 10px 30px rgba(255, 215, 0, .15); }
+    .vip-border { border-image: linear-gradient(45deg, #f59e0b, #facc15, #fde047) 1; border-width: 1px; border-style: solid; }
+  </style>
+</head>
+<body class="text-white/90 antialiased">
+  <!-- Header -->
+  <header class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">ALL 3Patti Games HUB</h1>
+        <p class="text-white/70 mt-1">Orignal & Authentic Games ✨</p>
+      </div>
+      <a href="#" class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-semibold px-4 py-2 vip-glow hover:from-amber-400 hover:to-yellow-300 transition shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        Add to Homescreen
+      </a>
+    </div>
+
+    <!-- Controls -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="md:col-span-2">
+        <label class="sr-only" for="search">Search</label>
+        <input id="search" type="text" placeholder="Search games... (e.g., Gold, Blue)" class="w-full rounded-2xl bg-white/10 border border-white/10 focus:border-amber-400 focus:ring-amber-400/30 outline-none px-4 py-3 backdrop-blur placeholder-white/50" />
+      </div>
+      <div class="flex gap-3">
+        <select id="sort" class="flex-1 rounded-2xl bg-white/10 border border-white/10 px-4 py-3 focus:border-amber-400 focus:ring-amber-400/30 outline-none">
+          <option value="az">Sort: A → Z</option>
+          <option value="za">Sort: Z → A</option>
+          <option value="new">Newest Added</option>
+        </select>
+        <button id="vipToggle" class="rounded-2xl border border-amber-300/40 px-4 py-3 hover:bg-amber-300/10 transition">Rate Now</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div id="gameGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-5"></div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 bg-black/20 backdrop-blur sticky bottom-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-white/70">
+      <span>© <span id="year"></span> VIP Games Hub</span>
+      <span>Made for fast, mobile-first downloads ⚡</span>
+    </div>
+  </footer>
+
+  <!-- Template & Data -->
+  <template id="gameCardTpl">
+    <article class="group rounded-2xl vip-border bg-white/5 hover:bg-white/10 transition overflow-hidden vip-glow">
+      <div class="p-4 flex items-start gap-3">
+       
+        <div class="flex-1">
+          <h3 class="font-semibold text-lg leading-tight name">Game Name</h3>
+          <p class="text-white/60 text-sm mt-0.5 desc">Short description…</p>
+          <div class="mt-3 flex gap-2">
+            <a class="download inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-semibold px-3 py-2 hover:from-amber-400 hover:to-yellow-300 transition shadow" target="_blank" rel="noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a1 1 0 0 1 1 1v9.586l2.293-2.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4A1 1 0 0 1 8.293 11.293L10.586 13.586V4a1 1 0 0 1 1-1Z"/><path d="M5 19a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1Z"/></svg>
+              Download
+            </a>
+            <button class="copy rounded-xl border border-white/10 px-3 py-2 hover:bg-white/10 transition text-sm">Copy Link</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script>
+    // 🔧 EDIT THIS LIST: Add/Update your game names & links here
+    // You can add more than 15 games easily
+    const games = [
+      { name: '3 patti Gold', url: 'https://www.youtube.com/shorts/uleFe6dpUvc?feature=share', desc: 'Best Roulte Game.' },
+      { name: '3 patti Spin', url: 'https://www.youtube.com/shorts/uleFe6dpUvc?feature=share', desc: 'High Wining Game.' },
+   
+   
+    ];
+
+    const grid = document.getElementById('gameGrid');
+    const tpl = document.getElementById('gameCardTpl');
+    const search = document.getElementById('search');
+    const sort = document.getElementById('sort');
+    const vipToggle = document.getElementById('vipToggle');
+
+    // Render function
+    let renderList = games.map((g, i) => ({ ...g, addedAt: Date.now() + i }));
+
+    function render(items) {
+      grid.innerHTML = '';
+      items.forEach((g) => {
+        const node = tpl.content.cloneNode(true);
+        node.querySelector('.name').textContent = g.name;
+        node.querySelector('.desc').textContent = g.desc || '—';
+        node.querySelector('.download').href = g.url;
+        node.querySelector('.copy').addEventListener('click', () => {
+          navigator.clipboard.writeText(g.url);
+          showToast('Link copied for ' + g.name);
+        });
+        grid.appendChild(node);
+      });
+    }
+
+    function filterAndSort() {
+      const q = search.value.trim().toLowerCase();
+      let items = renderList.filter(g => g.name.toLowerCase().includes(q));
+      const s = sort.value;
+      if (s === 'az') items.sort((a,b) => a.name.localeCompare(b.name));
+      if (s === 'za') items.sort((a,b) => b.name.localeCompare(a.name));
+      if (s === 'new') items.sort((a,b) => b.addedAt - a.addedAt);
+      render(items);
+    }
+
+    search.addEventListener('input', filterAndSort);
+    sort.addEventListener('change', filterAndSort);
+
+    // VIP glow toggle
+    let vipOn = true;
+    vipToggle.addEventListener('click', () => {
+      vipOn = !vipOn;
+      document.querySelectorAll('.vip-glow').forEach(el => {
+        el.style.boxShadow = vipOn ? '0 10px 30px rgba(255, 215, 0, .15)' : 'none';
+      });
+      vipToggle.classList.toggle('bg-amber-300/20');
+    });
+
+    // Simple toast notification
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-black/80 border border-white/10 px-4 py-2 rounded-xl text-sm hidden';
+    document.body.appendChild(toast);
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 1400);
+    }
+
+    // Init
+    document.getElementById('year').textContent = new Date().getFullYear();
+    filterAndSort();
+
+    // 👑 How to change VIP background:
+    // Replace the URL in :root --vip-bg above with your own background image link
+  </script>
+
+  <!--
+  📌 HOW TO USE
+  1) VIP Background: In the <style> above, replace the --vip-bg URL with your image (e.g., Google Drive direct link or any hosted image).
+  2) Add your games: Edit the `games` array in the <script> and paste your real download links.
+  3) More than 15 games? Keep adding objects { name, url, desc } in the `games` list.
+  4) Hosting: You can upload this single HTML file to GitHub Pages, Netlify, or any hosting.
+  5) Icons/Logos: You can add your logo in the header and favicon in <head>.
+  -->
+</body>
